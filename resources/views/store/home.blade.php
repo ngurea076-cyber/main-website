@@ -6,6 +6,14 @@
 @php
     $heroProduct = $featured->first();
     $categorySections = ($categories ?? collect())->take(5);
+    $heroImage = $heroProduct ? \App\Support\ImageCdn::responsive($heroProduct->primary_image, [
+        'width' => 760,
+        'height' => 520,
+        'mode' => 'fit',
+        'widths' => [320, 480, 640, 760],
+        'sizes' => '(max-width: 767px) 42vw, (max-width: 1279px) 36vw, 320px',
+        'quality' => 'q_auto:eco',
+    ]) : null;
 @endphp
 
 <section class="bg-white">
@@ -38,8 +46,18 @@
                         </span>
                     </div>
 
-                    @if($heroProduct)
-                        <img src="{{ $heroProduct->primary_image }}" alt="{{ $heroProduct->title }}" class="absolute bottom-0 right-0 hidden h-[78%] w-[46%] object-contain drop-shadow-[0_18px_24px_rgba(37,99,235,0.18)] md:block">
+                    @if($heroProduct && $heroImage)
+                        <img
+                            src="{{ $heroImage['src'] }}"
+                            @if($heroImage['srcset']) srcset="{{ $heroImage['srcset'] }}" @endif
+                            @if($heroImage['sizes']) sizes="{{ $heroImage['sizes'] }}" @endif
+                            width="{{ $heroImage['width'] ?? 760 }}"
+                            height="{{ $heroImage['height'] ?? 520 }}"
+                            alt="{{ $heroProduct->title }}"
+                            fetchpriority="high"
+                            decoding="async"
+                            class="absolute bottom-0 right-0 hidden h-[78%] w-[46%] object-contain drop-shadow-[0_18px_24px_rgba(37,99,235,0.18)] md:block"
+                        >
                     @endif
                 </a>
 

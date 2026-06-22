@@ -10,6 +10,14 @@
     $images = collect($product->images ?? [])->filter()->values();
     $specs = collect($product->specs ?? [])->filter();
     $buyText = 'Hello, I am interested in '.$product->title.' - KES '.number_format($price);
+    $mainImage = \App\Support\ImageCdn::responsive($product->primary_image, [
+        'width' => 900,
+        'height' => 900,
+        'mode' => 'fit',
+        'widths' => [360, 540, 720, 900],
+        'sizes' => '(max-width: 1023px) 92vw, 54vw',
+        'quality' => 'q_auto:eco',
+    ]);
 @endphp
 
 <section class="bg-white">
@@ -29,13 +37,43 @@
                 <div class="grid gap-3 md:grid-cols-[96px_minmax(0,1fr)]">
                     <div class="hidden flex-col gap-3 md:flex">
                         @foreach($images->take(5) as $image)
+                            @php
+                                $thumb = \App\Support\ImageCdn::responsive($image, [
+                                    'width' => 160,
+                                    'height' => 160,
+                                    'mode' => 'fit',
+                                    'widths' => [96, 160],
+                                    'sizes' => '96px',
+                                    'quality' => 'q_auto:eco',
+                                ]);
+                            @endphp
                             <div class="aspect-square overflow-hidden rounded-[12px] border border-[#eeeeee] bg-white p-2">
-                                <img src="{{ $image }}" alt="{{ $product->title }}" class="h-full w-full object-contain">
+                                <img
+                                    src="{{ $thumb['src'] }}"
+                                    @if($thumb['srcset']) srcset="{{ $thumb['srcset'] }}" @endif
+                                    @if($thumb['sizes']) sizes="{{ $thumb['sizes'] }}" @endif
+                                    width="{{ $thumb['width'] ?? 160 }}"
+                                    height="{{ $thumb['height'] ?? 160 }}"
+                                    alt="{{ $product->title }}"
+                                    loading="lazy"
+                                    decoding="async"
+                                    class="h-full w-full object-contain"
+                                >
                             </div>
                         @endforeach
                     </div>
                     <div class="flex min-h-[360px] items-center justify-center rounded-[14px] bg-white p-4">
-                        <img src="{{ $product->primary_image }}" alt="{{ $product->title }}" class="max-h-[520px] w-full object-contain">
+                        <img
+                            src="{{ $mainImage['src'] }}"
+                            @if($mainImage['srcset']) srcset="{{ $mainImage['srcset'] }}" @endif
+                            @if($mainImage['sizes']) sizes="{{ $mainImage['sizes'] }}" @endif
+                            width="{{ $mainImage['width'] ?? 900 }}"
+                            height="{{ $mainImage['height'] ?? 900 }}"
+                            alt="{{ $product->title }}"
+                            fetchpriority="high"
+                            decoding="async"
+                            class="max-h-[520px] w-full object-contain"
+                        >
                     </div>
                 </div>
             </div>

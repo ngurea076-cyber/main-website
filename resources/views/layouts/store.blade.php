@@ -15,6 +15,7 @@
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="icon" href="/app-icon.jpg" type="image/jpeg">
@@ -37,7 +38,7 @@
 
             <div class="site-desktop-width mx-auto flex h-[84px] items-center gap-8 px-6">
                 <a href="{{ route('home') }}" class="shrink-0">
-                    <img src="/logo.png" alt="Shop ICT Kenya" class="h-14 w-auto object-contain">
+                    <img src="/logo.png" width="512" height="454" alt="Shop ICT Kenya" class="h-14 w-auto object-contain">
                 </a>
 
                 <form action="{{ route('shop') }}" class="mx-auto w-full max-w-2xl">
@@ -83,7 +84,7 @@
             </div>
             <div class="mx-auto grid h-[84px] w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3 px-4 sm:px-6">
                 <a href="{{ route('home') }}" class="justify-self-start text-[#111827]">
-                    <img src="/logo.png" alt="Shop ICT Kenya" class="h-11 w-auto object-contain">
+                    <img src="/logo.png" width="512" height="454" alt="Shop ICT Kenya" class="h-11 w-auto object-contain">
                 </a>
 
                 <form action="{{ route('shop') }}" class="mx-auto min-w-0 w-full max-w-[190px] sm:max-w-[240px]">
@@ -104,7 +105,7 @@
         <div data-mobile-menu class="fixed inset-0 z-[80] hidden bg-black/30 backdrop-blur-[2px] lg:hidden">
             <div class="absolute right-0 top-0 h-full w-[86vw] max-w-sm overflow-y-auto bg-white px-6 pb-8 pt-6 shadow-[0_24px_60px_-24px_rgba(17,24,39,0.35)]">
                 <div class="mb-8 flex items-center justify-between">
-                    <a href="{{ route('home') }}"><img src="/logo.png" alt="Shop ICT Kenya" class="h-12 w-auto object-contain"></a>
+                    <a href="{{ route('home') }}"><img src="/logo.png" width="512" height="454" alt="Shop ICT Kenya" class="h-12 w-auto object-contain"></a>
                     <button data-close-menu class="inline-flex h-10 w-10 items-center justify-center rounded-full hover:bg-[#f5f5f5]" aria-label="Close menu">
                         <i data-lucide="x" class="h-5 w-5 text-[#111827]"></i>
                     </button>

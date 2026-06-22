@@ -4,11 +4,29 @@
     $oldPrice = $product->old_price && (float) $product->old_price > $price ? (float) $product->old_price : null;
     $discount = $oldPrice ? round((($oldPrice - $price) / $oldPrice) * 100) : null;
     $buyText = 'Hello, I am interested in '.$product->title.' - KES '.number_format($price);
+    $image = \App\Support\ImageCdn::responsive($product->primary_image, [
+        'width' => 520,
+        'height' => 520,
+        'mode' => 'fit',
+        'widths' => [180, 260, 360, 520],
+        'sizes' => '(max-width: 639px) 68vw, (max-width: 1023px) 50vw, (max-width: 1279px) 25vw, 20vw',
+        'quality' => 'q_auto:eco',
+    ]);
 @endphp
 
 <article class="group relative mb-3 flex h-full w-full flex-col overflow-hidden rounded-[8px] border border-black/5 bg-white shadow-[0_1px_4px_rgba(0,0,0,0.08)] transition duration-200 ease-[ease] hover:-translate-y-0.5 active:scale-[0.98] sm:mb-0 sm:rounded-xl sm:border sm:bg-card sm:p-[4px] sm:shadow-none">
     <a href="{{ route('products.show', $product) }}" class="relative block h-[220px] w-full overflow-hidden bg-white sm:aspect-square sm:h-auto sm:rounded-[calc(theme(borderRadius.xl)-4px)]">
-        <img src="{{ $product->primary_image }}" alt="{{ $product->title }}" loading="lazy" decoding="async" class="h-full w-full object-contain object-center transition-transform duration-200 ease-[ease] group-hover:scale-[1.02]">
+        <img
+            src="{{ $image['src'] }}"
+            @if($image['srcset']) srcset="{{ $image['srcset'] }}" @endif
+            @if($image['sizes']) sizes="{{ $image['sizes'] }}" @endif
+            width="{{ $image['width'] ?? 520 }}"
+            height="{{ $image['height'] ?? 520 }}"
+            alt="{{ $product->title }}"
+            loading="lazy"
+            decoding="async"
+            class="h-full w-full object-contain object-center transition-transform duration-200 ease-[ease] group-hover:scale-[1.02]"
+        >
 
         <div class="absolute left-2 right-2 top-2 flex items-start justify-between sm:left-3 sm:right-3 sm:top-3">
             @if($discount)
