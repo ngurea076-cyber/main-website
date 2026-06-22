@@ -3,14 +3,19 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('attendant')->after('password');
-            $table->boolean('is_active')->default(true)->after('role');
-        });
+        foreach (['orders', 'inquiries', 'product_catalogue', 'products', 'categories', 'settings'] as $table) {
+            if (Schema::hasTable($table) && DB::table($table)->exists()) {
+                throw new RuntimeException("UUID repair refused because {$table} already contains data.");
+            }
+        }
+
+        Schema::dropIfExists('orders'); Schema::dropIfExists('inquiries'); Schema::dropIfExists('product_catalogue');
+        Schema::dropIfExists('products'); Schema::dropIfExists('categories'); Schema::dropIfExists('settings');
 
         Schema::create('categories', function (Blueprint $table) {
             $table->uuid('id')->primary(); $table->string('name'); $table->string('slug')->unique();
@@ -19,10 +24,9 @@ return new class extends Migration {
         Schema::create('products', function (Blueprint $table) {
             $table->uuid('id')->primary(); $table->foreignUuid('category_id')->nullable()->constrained()->nullOnDelete();
             $table->string('title'); $table->string('slug')->unique(); $table->string('brand')->nullable();
-            $table->text('description')->nullable(); $table->decimal('price', 12, 2)->default(0);
-            $table->decimal('old_price', 12, 2)->nullable(); $table->string('stock_status')->default('in_stock');
-            $table->json('images')->nullable(); $table->json('specs')->nullable(); $table->boolean('featured')->default(false);
-            $table->unsignedInteger('priority')->default(0); $table->timestamps();
+            $table->text('description')->nullable(); $table->decimal('price', 12, 2)->default(0); $table->decimal('old_price', 12, 2)->nullable();
+            $table->string('stock_status')->default('in_stock'); $table->json('images')->nullable(); $table->json('specs')->nullable();
+            $table->boolean('featured')->default(false); $table->unsignedInteger('priority')->default(0); $table->timestamps();
             $table->index(['category_id', 'featured']);
         });
         Schema::create('product_catalogue', function (Blueprint $table) {
@@ -44,10 +48,5 @@ return new class extends Migration {
         });
     }
 
-    public function down(): void
-    {
-        Schema::dropIfExists('settings'); Schema::dropIfExists('orders'); Schema::dropIfExists('inquiries');
-        Schema::dropIfExists('product_catalogue'); Schema::dropIfExists('products'); Schema::dropIfExists('categories');
-        Schema::table('users', fn (Blueprint $table) => $table->dropColumn(['role', 'is_active']));
-    }
+    public function down(): void {}
 };

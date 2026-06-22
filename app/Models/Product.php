@@ -1,8 +1,12 @@
 <?php
 namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class Product extends Model {
+    use HasUuids;
+    public $incrementing = false;
+    protected $keyType = 'string';
     protected $guarded = [];
     protected function casts(): array { return ['images'=>'array','specs'=>'array','featured'=>'boolean','price'=>'decimal:2','old_price'=>'decimal:2']; }
     public function category(): BelongsTo { return $this->belongsTo(Category::class); }
