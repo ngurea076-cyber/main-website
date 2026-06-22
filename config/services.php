@@ -4,6 +4,12 @@ return [
 
     'whatsapp' => ['number' => env('WHATSAPP_NUMBER', '254700000000')],
 
+    'cloudinary' => [
+        'cloud_name' => env('CLOUDINARY_CLOUD_NAME'),
+        'api_key' => env('CLOUDINARY_API_KEY'),
+        'api_secret' => env('CLOUDINARY_API_SECRET'),
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Third Party Services

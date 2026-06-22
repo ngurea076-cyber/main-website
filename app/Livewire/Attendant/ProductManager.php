@@ -2,7 +2,9 @@
 namespace App\Livewire\Attendant;
 use App\Models\Category;
 use App\Models\Product;
+use App\Services\CloudinaryUploader;
 use Illuminate\Support\Str;
+use Throwable;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -18,7 +20,13 @@ class ProductManager extends Component {
         $data=$this->validate(); unset($data['newImages']);
         $product=$this->editingId ? Product::findOrFail($this->editingId) : new Product;
         $data['slug']=$this->uniqueSlug($this->title,$product->id); $images=$product->images ?? [];
-        foreach($this->newImages as $image) $images[]='/storage/'.$image->store('products','public');
+        try {
+            foreach($this->newImages as $image) $images[]=app(CloudinaryUploader::class)->upload($image);
+        } catch (Throwable $exception) {
+            report($exception);
+            $this->addError('newImages', 'The image upload failed. Check the Cloudinary settings and try again.');
+            return;
+        }
         $data['images']=$images; $product->fill($data)->save(); $this->resetForm(); session()->flash('status','Product saved.');
     }
     public function delete(Product $product): void { $product->delete(); session()->flash('status','Product deleted.'); }
